@@ -1,12 +1,12 @@
 import requests
 import json
 
-#Test git
 
 #Опредилим url тестируемого API
 url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
 #Заголовки всегда используем одинаковые
+#Использую 'postman-token' потому что без него почему то пишет, что невалидный ключ апи
 headers = {
     'cache-control': "no-cache",
     'postman-token': "b1cf028b-900c-bdd0-468b-808a0031240f"
@@ -28,17 +28,18 @@ def test_status (expected):
 
 
 #Функция сохранения результатов теста
+#По ключу (номер теста) записывается лист с результатами, возвращается list 
 def test_summary(p_string, test_expected):
 	l.append(response.status_code)
 	l.append(parsed_string["status"])
 	l.append(test_status(test_expected))
 	return l
 
-#Тест1. 
-#key: отправка существующего ключа
-
 #Переменная для подсчета количества тестов
 test_num = 1
+
+#Тест1. 
+#key: отправка существующего ключа
 
 #Параметры запроса
 querystring = {"location":"55.756961,37.614228","radius":"50","key":"AIzaSyCWOSz0D-dfNnfv7FJh6pP3dghHM9NmyuQ","maxprice":"4","minprice":"0"}
@@ -47,9 +48,13 @@ response = requests.request("GET", url,  headers=headers, params=querystring)
 #переменная в которую записывается json в формате словаря, для дальнейшего парсинга
 parsed_string = json.loads(response.text)
 
+#Запись в словарь результатов теста
 test_dict["Test " + str(test_num)] = str(test_summary(parsed_string, 'OK'))
 
+#После каждого теста отчищаю лист
 l.clear()
+
+#Дальнейшие тесты сделаны по аналогии с первым тестом. Где есть отличия описано в комментах (Тест 16 и 17)
 
 #Тест2. 
 #key: отправка не существующего ключа
@@ -182,6 +187,7 @@ l.clear()
 
 test_num += 1 
 
+#В данном тесте я ожидаю "INVALID_REQUEST", но возвращается ZERO_RESULTS либо OK, что противоречит документации
 querystring = {"location":"55.756961,37.614228","radius":"50000000","key":"AIzaSyCWOSz0D-dfNnfv7FJh6pP3dghHM9NmyuQ","maxprice":"4","minprice":"0"}
 response = requests.request("GET", url,  headers=headers, params=querystring)
 
