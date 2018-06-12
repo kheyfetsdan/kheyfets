@@ -286,6 +286,22 @@ else:
 
 l.clear()
 
+#Тест18. 
+#Проверка запроса DELETE
+
+test_num += 1 
+
+querystring = {"key":"AIzaSyCWOSz0D-dfNnfv7FJh6pP3dghHM9NmyuQ","radius":"500","maxprice":"4","minprice":"0","location":"55.756961,37.614228"}
+response = requests.request("DELETE", url,  headers=headers, params=querystring)
+
+if (response.status_code == 405):
+    test_dict["Test " + str(test_num)] = "passed"
+else:
+    test_dict["Test " + str(test_num)] = "failure"
+
+l.clear()
+
+
 #Вывод результатов теста на экран
 i = 1
 while i <= test_num:
